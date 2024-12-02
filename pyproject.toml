@@ -21,3 +21,4 @@ keywords = ["poker", "pokercraft", "bankroll"]
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
+python-source = "python"
