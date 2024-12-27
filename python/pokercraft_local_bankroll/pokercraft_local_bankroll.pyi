@@ -15,6 +15,12 @@ class BankruptcyMetric:
         """
         ...
 
+    def get_survival_rate(self) -> float:
+        """
+        Get the profitable rate. This is not cached.
+        """
+        ...
+
     def get_profitable_rate(self) -> float:
         """
         Get the profitable rate. This is not cached.

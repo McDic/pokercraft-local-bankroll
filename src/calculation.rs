@@ -6,6 +6,8 @@ use rayon::prelude::*;
 /// Represents a bankruptcy metric.
 #[pyclass]
 pub struct BankruptcyMetric {
+    /// Holds `(relative_return, iteration)` tuples.
+    /// (Relative return = final capital / initial capital)
     simulated_results: Vec<(f64, u32)>,
 }
 
@@ -39,6 +41,19 @@ impl BankruptcyMetric {
             .simulated_results
             .iter()
             .filter(|(capital, _bank)| *capital <= 0.0)
+            .count() as f64)
+            / (self.len() as f64)
+    }
+
+    /// Get the survival rate. This is not cached.
+    pub fn get_survival_rate(&self) -> f64 {
+        if self.simulated_results.is_empty() {
+            return 0.0;
+        }
+        (self
+            .simulated_results
+            .iter()
+            .filter(|(capital, _bank)| *capital > 0.0)
             .count() as f64)
             / (self.len() as f64)
     }
@@ -144,8 +159,8 @@ fn simple_monte_carlo_loop(
             return (0.0, i + 1);
         } else if capital >= exit_capital {
             // Exit if profit is reached
-            return (capital, 0);
+            return (capital / initial_capital, 0);
         }
     }
-    (f64::max(capital, 0.0), 0)
+    (f64::max(capital / initial_capital, 0.0), 0)
 }
